@@ -15,13 +15,10 @@ output: prompt win or lose
       else, cpu wins
 5. 
 */
-const scoreboard = {
-  player: 0,
-  computer: 0,
-}
 
-let playerScore = scoreboard['player'];
-let computerScore = scoreboard['computer'];
+let playerScore = 0;
+let computerScore = 0;
+let drawScore = 0;
 
 const getComputerChoice = function () {
   let cpuChoice = Math.floor(Math.random() * 3);
@@ -34,53 +31,68 @@ const getComputerChoice = function () {
   }
 }
 
-const getHumanChoice = function () {
-  let humanChoice = parseInt(prompt("Choose the following: \nrock : 0\npaper : 1\nscissor : 2"));
-  if (humanChoice === 0) {
-    return 'rock'
-  } else if (humanChoice === 1) {
-    return 'paper'
-  } else if (humanChoice === 2) {
-    return 'scissor'
+const playRound = function (playerSelection,computerSelection) {
+  if ((computerSelection === 'rock' && playerSelection === 'scissor') || 
+    (computerSelection === 'paper' && playerSelection === 'rock') ||
+    (computerSelection === 'scissor' && playerSelection === 'paper')) {
+      computerScore += 1;
+      // console.log('current player score',playerScore);
+      // console.log('current computer score',computerScore);
+      // console.log('current draw score',drawScore);
+      // console.log('----------------------');
+  } else if ((computerSelection === playerSelection)) {
+      drawScore += 1;
+      // console.log('current player score',playerScore);
+      // console.log('current computer score',computerScore);
+      // console.log('current draw score',drawScore);
+      // console.log('----------------------');
   } else {
-    alert("Please choose number from 0 to 2");
-    return getHumanChoice();
+      playerScore += 1;
+      // console.log('current player score',playerScore);
+      // console.log('current computer score',computerScore);
+      // console.log('current draw score',drawScore);
+      // console.log('----------------------');
   }
-}
+  updateScore();
+};
 
-const playRounds = function () {
-  for (let i = 0; i < 5; i++) {
-    let computerChoice = getComputerChoice();
-    let humanChoice = getHumanChoice();
-    console.log(computerChoice);
-    console.log(humanChoice);
-    console.log('-------')
-    if ((computerChoice === 'rock' && humanChoice === 'paper') || 
-      (computerChoice === 'paper' && humanChoice === 'rock') ||
-      (computerChoice === 'scissor' && humanChoice === 'paper')) {
-        computerScore = computerScore+=1;
-    } else if ((computerChoice === 'rock' && humanChoice === 'rock') || 
-      (computerChoice === 'paper' && humanChoice === 'paper') ||
-      (computerChoice === 'scissor' && humanChoice === 'scissor')) {
-        continue;
+const checkWinner = function () {
+  if (playerScore >= 5 || computerScore >= 5) {
+    if (playerScore > computerScore) {
+      alert('You Win!')
+    } else if (playerScore === computerScore) {
+      alert('Draw!')
     } else {
-        playerScore = playerScore+=1;
+      alert('Computer Win!')
     }
+  playerScore = 0;
+  computerScore = 0;
+  drawScore = 0;
   }
-  if (playerScore > computerScore) {
-    alert('You Win!')
-  } else if (playerScore === computerScore) {
-    alert('Draw!')
-  } else {
-    alert('Computer Win!')
-  }
-  console.log('current player score',playerScore);
-  console.log('current computer score',computerScore);
 }
 
-playRounds();
+const updateScore = function () {
+  const score = document.getElementById('score').innerHTML = `
+    <div>Current player score: ${playerScore}</div>
+    <div>Current computer score: ${computerScore}</div>
+    <div>Current draw score: ${drawScore}</div>`
+}
 
-
-
-
-
+const rock = document.getElementById('rock').addEventListener('click', () => {
+  const playerSelection = 'rock';
+  const computerSelection = getComputerChoice();
+  playRound(playerSelection, computerSelection);
+  checkWinner();
+});
+const paper = document.getElementById('paper').addEventListener('click', () => {
+  const playerSelection = 'paper';
+  const computerSelection = getComputerChoice();
+  playRound(playerSelection, computerSelection);
+  checkWinner();
+});
+const scissor = document.getElementById('scissor').addEventListener('click', () => {
+  const playerSelection = 'scissor';
+  const computerSelection = getComputerChoice();
+  playRound(playerSelection, computerSelection);
+  checkWinner();
+});
